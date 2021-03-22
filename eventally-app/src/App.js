@@ -6,12 +6,15 @@ import LoginPage from './components/LoginPage.js'
 import { Auth, Hub } from 'aws-amplify';
 
 const initialFormState = {
+  // shows signup form first by default
+  // formType allows toggle between form types
   username: '', password: '', email: '', authCode: '', formType: 'signUp'
 }
 
 function App() {
+  // allows update state
   const [formState, updateFormState] = useState(initialFormState)
-
+  // persists user info
   const [user, updateUser] = useState(null)
 
   // persists user information

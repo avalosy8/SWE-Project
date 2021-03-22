@@ -10,6 +10,7 @@ function LoginPage({formState, updateFormState}) {
     const { formType } = formState
 
 // functions for each form type, using Auth
+// toggles formState using updateFormState
 async function signUp() {
   const { username, email, password } = formState
   await Auth.signUp({ username, password, attributes: { email }})
@@ -26,9 +27,11 @@ async function signIn() {
   updateFormState(() => ({ ...formState, formType: "signedIn" }))
 }
 
+// whenever user is typing
 function onChange(e) {
     e.persist()
-    updateFormState(() => ({ ...formState, [e.target.name]: e.target.value}))
+    // returns exisitng formState, input is taken
+    updateFormState(() => ({ ...formState, [e.target.name]: e.target.value})) // name of input, value of input user types in
   }
 
     return(
@@ -39,8 +42,9 @@ function onChange(e) {
                     <form>
                         <h2>Sign In</h2>
 
+                        {/* checks for formType, returns accordingly */}
                         {
-                        formType == 'confirmSignUp' && (
+                        formType == 'confirmSignUp' && ( 
                             <div className="user signInBox">
                             <input name="authCode" onChange={onChange} placeholder="Confirmation Code" />
                             <button onClick={confirmSignUp}>Confirm Sign Up</button>
@@ -92,7 +96,7 @@ function onChange(e) {
                                 </div>
                             )
                         }
-                        {/* takes user to sign in page */}
+                        {/* takes user to sign in page, manually updates state */}
                         <p className="signup">Already have an account? <a href="#" onClick={() => updateFormState(() => ({
                                                                                 ...formState, formType: "signIn"
                                                                             }))}>Sign in.</a></p>
