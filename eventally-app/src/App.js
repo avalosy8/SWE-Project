@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
-
 import { Auth, Hub } from 'aws-amplify';
-
+import { 
+MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn, MDBIcon, 
+MDBCard, MDBCardImage, MDBCardBody, MDBCardText, MDBCardTitle, 
+MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavLink, MDBNavbarToggler, MDBCollapse, MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem} from "mdbreact";
 const initialFormState = {
   username: '', password: '', email: '', authCode: '', formType: 'signUp'
 }
@@ -47,11 +49,13 @@ function App() {
 
   // functions for each form type, using Auth
   const { formType } = formState
+
   async function signUp() {
     const { username, email, password } = formState
     await Auth.signUp({ username, password, attributes: { email }})
-    updateFormState(() => ({ ...formState, formType: "confirmSignUp" }))
+    updateFormState({ ...formState, formType: "confirmSignUp" })
   }
+
   async function confirmSignUp() {
     const { username, authCode } = formState
     await Auth.confirmSignUp(username, authCode)
@@ -62,28 +66,45 @@ function App() {
     await Auth.signIn(username, password)
     updateFormState(() => ({ ...formState, formType: "signedIn" }))
   }
+  console.log(user);
 
   return (
-    <div className="App">
+    <MDBContainer> 
+
+      {/* Nav bar WIP, need to add links etc */}
+      <MDBNavbar color="light-blue" fixed="top" dark expand="md" >
+          <strong className="white-text">WECE</strong>
+      </MDBNavbar>
+
+    <MDBCard wide cascade className="centered"> <MDBCardBody cascade>
     {
       formType == 'signUp' && (
         <div>
-          <input name="username" onChange={onChange} placeholder="username" />
-          <input name="password" type="password" onChange={onChange} placeholder="password" />
-          <input name="email" onChange={onChange} placeholder="email" />
-          <button onClick={signUp}>Sign Up</button>
-          <button onClick={() => updateFormState(() => ({
-            ...formState, formType: "signIn"
-          }))}>Sign In</button>
+          
+          <MDBCardTitle className='text-center'>Sign Up</MDBCardTitle>
+          <MDBInput label="Username" name="username" icon="user" onChange={onChange} placeholder="username" />
+          <MDBInput label="Password" name="password" icon="lock" type="password" onChange={onChange} placeholder="password" />
+          <MDBInput label="Email" name="email" icon="envelope" onChange={onChange} placeholder="email" />
+            <div className="text-center">
+            <button type="button" className="btn btn-primary btn-floating" onClick={signUp}>Sign Up</button>
+            {/* <MDBBtn className= "btn-primary" onClick={signUp}>Sign Up</MDBBtn> */}
+            {/* <MDBBtn onClick={async () => {await this.signUp();}}>Sign Up</MDBBtn> */}
+            <button type="button" className="btn btn-primary btn-floating" onClick={() => updateFormState(() => ({
+              ...formState, formType: "signIn"
+            }))}>Sign In</button>
+            </div>
         </div>
       )
     }
-
+    
     {
       formType == 'confirmSignUp' && (
         <div>
-          <input name="authCode" onChange={onChange} placeholder="Confirmation Code" />
-          <button onClick={confirmSignUp}>Confirm Sign Up</button>
+          <MDBCardTitle className='text-center'>Enter Confirmation Code</MDBCardTitle>
+          <MDBInput label="Confirmation Code" name="authCode" onChange={onChange} placeholder="Confirmation Code" />
+            <div className="text-center">
+            <button type="button" className="btn btn-primary btn-floating" onClick={confirmSignUp}>Confirm Sign Up</button>
+            </div>
         </div>
       )
     }
@@ -91,24 +112,30 @@ function App() {
     {
       formType == 'signIn' && (
         <div>
-          <input name="username" onChange={onChange} placeholder="username" />
-          <input name="password" type="password" onChange={onChange} placeholder="password" />
-          <button onClick={signIn}>Sign In</button>
+          <MDBCardTitle className='text-center'>Sign In</MDBCardTitle>
+          <MDBInput label="Username" name="username" icon="user" onChange={onChange} placeholder="username" />
+          <MDBInput label="Password" name="password" icon="lock" type="password" onChange={onChange} placeholder="password" />
+            <div className="text-center">
+            <button type="button" className="btn btn-primary btn-floating" onClick={signIn}>Sign In</button>
+            </div>
         </div>
       )
     }
 
     {
       formType == 'signedIn' && (
-        <div>
-          <h1>Welcome, user</h1>
-          <button onClick={
+        <div className="text-center">
+          <h2>Successfully logged in!</h2>
+          {/* check for null user */}
+          <h1>Email: {user.attributes.email}</h1>
+          <button type="button" className="btn btn-primary btn-floating" onClick={
             () => Auth.signOut()
           }>Sign Out</button>
         </div>
       )
     }
-    </div>
+    </MDBCardBody> </MDBCard> 
+    </MDBContainer>
   );
 }
 
