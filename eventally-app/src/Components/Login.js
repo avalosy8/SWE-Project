@@ -6,6 +6,7 @@ import { Auth, Hub } from 'aws-amplify';
 import Sidebar from "./Sidebar";
 import Main from "./Main"
 
+
 const initialFormState = {
   username: '', password: '', email: '', authCode: '', formType: 'signUp'
 }
@@ -104,6 +105,7 @@ function Login() {
       formType == 'signedIn' && (
         <div>
           <h1>Welcome, user</h1>
+          <Sidebar />
           <Main/>
           <button onClick={
             () => Auth.signOut()
