@@ -12,12 +12,17 @@
   margin-left: 100px;
 }
 
+.welcomAlignment {
+  float: right;
+}
+
 body {
   margin: 0;
   padding: 0;
 }
 
 .Sidebar {
+  float: left;
   height: 100%;
   width: 250px;
   background-color: #0b427a;
@@ -35,10 +40,12 @@ img {
 }
 
 .Main {
+  float: right;
   width: 55%;
 }
 
 .Main img {
+  float: right;
   width: 95%;
 }
 
