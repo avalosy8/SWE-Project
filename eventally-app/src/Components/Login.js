@@ -3,12 +3,30 @@ import '../App.css';
 
 import { Auth, Hub } from 'aws-amplify';
 
+import { makeStyles } from "@material-ui/core/styles";
+import Button from '@material-ui/core/Button';
+import Input from '@material-ui/core/Input';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
+import HttpsIcon from '@material-ui/icons/Https';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import CheckIcon from '@material-ui/icons/Check';
+
 import Sidebar from "./Sidebar";
 import Main from "./Main"
 
 const initialFormState = {
   username: '', password: '', email: '', authCode: '', formType: 'signUp'
 }
+
+const useStyles = makeStyles({
+  root: {
+    maxWidth: 345
+  }
+});
 
 function Login() {
   const [formState, updateFormState] = useState(initialFormState)
@@ -69,27 +87,28 @@ function Login() {
     .then(data => console.log(data.attributes))
     .catch(err => console.log(err));
 
+  const classes = useStyles();
   return (
-    <div className="App">
+    <Card className={classes.root} alignItems="center" className="App">
     {
       formType == 'signUp' && (
-        <div>
-          <input name="username" onChange={onChange} placeholder="username" />
-          <input name="password" type="password" onChange={onChange} placeholder="password" />
-          <input name="email" onChange={onChange} placeholder="email" />
-          <button onClick={signUp}>Sign Up</button>
-          <button onClick={() => updateFormState(() => ({
+        <CardContent>
+          <CardContent> <EmojiEmotionsIcon color="primary"/> <Input name="username" onChange={onChange} placeholder="Email" /> </CardContent>
+          <CardContent> <CheckIcon color="primary"/> <Input name="email" onChange={onChange} placeholder="Confirm Email" /> </CardContent>
+          <CardContent> <HttpsIcon color="primary"/> <Input name="password" type="password" onChange={onChange} placeholder="Password" /> </CardContent>
+          <CardContent> <Button variant="contained" color="primary" onClick={signUp}>Sign Up</Button>
+                        <Button variant="contained" color="primary" onClick={() => updateFormState(() => ({
             ...formState, formType: "signIn"
-          }))}>Sign In</button>
-        </div>
+          }))}>Sign In</Button> </CardContent>
+        </CardContent>
       )
     }
 
     {
       formType == 'confirmSignUp' && (
         <div>
-          <input name="authCode" onChange={onChange} placeholder="Confirmation Code" />
-          <button onClick={confirmSignUp}>Confirm Sign Up</button>
+          <CardContent> <Input name="authCode" onChange={onChange} placeholder="Confirmation Code" /> </CardContent>
+          <CardContent> <Button variant="contained" color="primary" onClick={confirmSignUp}>Confirm Sign Up</Button> </CardContent>
         </div>
       )
     }
@@ -97,9 +116,9 @@ function Login() {
     {
       formType == 'signIn' && (
         <div>
-          <input name="username" onChange={onChange} placeholder="username" />
-          <input name="password" type="password" onChange={onChange} placeholder="password" />
-          <button onClick={signIn}>Sign In</button>
+          <CardContent> <Input name="username" onChange={onChange} placeholder="username" /> </CardContent>
+          <CardContent> <Input name="password" type="password" onChange={onChange} placeholder="password" /> </CardContent>
+          <CardContent> <Button variant="contained" color="primary" onClick={signIn}>Sign In</Button> </CardContent>
         </div>
       )
     }
@@ -111,13 +130,13 @@ function Login() {
           <h1>Welcome, user </h1>
           <Main/>
 
-          <button onClick={
+          <Button variant="contained" color="primary" onClick={
             () => Auth.signOut()
-          }>Sign Out</button>
+          }>Sign Out</Button>
         </div>
       )
     }
-    </div>
+    </Card>
   );
 }
 
