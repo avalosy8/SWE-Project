@@ -38,6 +38,35 @@ const useStyles2 = makeStyles((theme) => ({
   },
 }));
 
+/************ DynamoDB stuff ******************/ 
+const { v4: uuidv4 } = require('uuid'); 
+uuidv4();
+const AWS = require("aws-sdk");
+AWS.config.update ({
+  region: "us-east-1",
+  accessKeyId: "AKIAXJ3VTSS354FEHLFV",
+  secretAccessKey: "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"  
+});
+
+const dynamodb = new AWS.DynamoDB.DocumentClient(); //simplified dynamodb library
+
+
+function putEvents(event){
+
+    var params3 = {};
+    params3.TableName = "Events";
+    params3.Item = {
+    EventId: 4, //partition key
+        Date: event.start.date, //sort key
+        name: event.summary
+    };
+    dynamodb.put(params3, function(err, data) {
+    if (err) console.log(err);
+    else console.log(data);
+    });
+}
+/************ DynamoDB stuff ******************/ 
+
 function GoogleCalendar(){
 
     var CLIENT_ID = "592427108490-6g68m3d237a6qrmj4cb3lkbr676k58bp.apps.googleusercontent.com"
@@ -86,6 +115,7 @@ function GoogleCalendar(){
     //     })
     // }
 
+    // when clicked, show events
     useEffect(() => {
         if(click == 0) {
         return
@@ -126,7 +156,7 @@ function GoogleCalendar(){
             { /* part of handleClick */ }
             {/* <button style={{width: 100, height: 50}} onClick={handleClick}>Get Events</button> */}
             <button style={{width: 100, height: 50}} onClick={e => setClick(click+1)}>Get Events</button>
-            
+
             {/* displays calendarEvents useState variable in its entire json string */}
             {/* {calendarEvents && <div>{JSON.stringify(calendarEvents.events, null, 4)}</div>} */}
 
@@ -160,6 +190,7 @@ function GoogleCalendar(){
 
             {calendarEvents.events && <div>
                 {calendarEvents.events.map((ev,key) => {
+                    putEvents(ev);
                     return(
                     <div className={classes2.root}>
                         <Paper className={classes2.paper}>
