@@ -8,8 +8,7 @@ function Main() {
         <div className="Main">
             <img src={welcome} />
         </div>
-    );
-     
+    ); 
 }
 
 export default Main;

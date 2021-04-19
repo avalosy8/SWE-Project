@@ -4,9 +4,12 @@ import GoogleCalendar from "./Components/GoogleCalendar";
 import React, { useEffect, useState } from 'react';
 import Sidebar from "./Components/Sidebar";
 
-//Gather proper installs
-//npm install uuid
-//npm install aws-sdk
+import Navbar from './Components/navbar';
+import Routes from './routes/routes';
+
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'bootstrap-css-only/css/bootstrap.min.css'; 
+import 'mdbreact/dist/css/mdb.css';
 
 const { v4: uuidv4 } = require('uuid'); 
 uuidv4();
@@ -97,15 +100,12 @@ const dynamodb = new AWS.DynamoDB.DocumentClient(); //simplified dynamodb librar
 
 
 function App() {
-
   return (
-    <div className="App">
-      {/* <Sidebar /> */}
-      <Login />
-      <GoogleCalendar/>
-
-      {/* testing out db stuff, this works */}
-      {/* <button style={{width: 100, height: 50}} onClick={putItem}>Get Events</button> */}
+    <div>
+      <>
+      <Navbar />
+      <Routes />
+      </>
     </div>
   );
 }
