@@ -4,13 +4,20 @@
   "private": true,
   "dependencies": {
     "@aws-amplify/ui-react": "^1.0.4",
+    "@emotion/react": "^11.1.5",
+    "@ericz1803/react-google-calendar": "^4.1.0",
+    "@material-ui/core": "^4.11.3",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.1",
     "aws-amplify": "^3.3.23",
+    "aws-sdk": "^2.888.0",
+    "mdbreact": "^5.0.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "uuid": "^8.3.2",
     "web-vitals": "^1.1.0"
   },
   "scripts": {

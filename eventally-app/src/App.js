@@ -1,113 +1,111 @@
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Login from "./Components/Login";
+import GoogleCalendar from "./Components/GoogleCalendar";
+import React, { useEffect, useState } from 'react';
+import Sidebar from "./Components/Sidebar";
 
-import { Auth, Hub } from 'aws-amplify';
+import Navbar from './Components/navbar';
+import Routes from './routes/routes';
 
-const initialFormState = {
-  username: '', password: '', email: '', authCode: '', formType: 'signUp'
-}
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'bootstrap-css-only/css/bootstrap.min.css'; 
+import 'mdbreact/dist/css/mdb.css';
+
+const { v4: uuidv4 } = require('uuid'); 
+uuidv4();
+const AWS = require("aws-sdk");
+AWS.config.update ({
+  region: "us-east-1",
+  accessKeyId: "AKIAXJ3VTSS354FEHLFV",
+  secretAccessKey: "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"  
+});
+
+const dynamodb = new AWS.DynamoDB.DocumentClient(); //simplified dynamodb library
+
+// const eventId = uuidv4(); //generate unique user id (uuid)
+// const date = "2021-05-01"; //find way to change based on user input
+// var pointvalue; //change based on user input
+
+// //repeat for more items and then use "put"
+// var params = {
+//   TableName : 'Events',
+//   Item: {
+//      EventId: {eventId}, //partition key
+//      Date: {date}, //sort key
+//      name: "Meet and Greet",
+//      pointvalue: {pointvalue}
+//   }
+// };
+
+// const userId = uuidv4(); //change to cognito id and use id as partition key
+// var pointcount;
+// //dont use sort key or use sort key of pointcount to sort users by highest to lowest count
+// var params2 = {
+//   TableName : 'Points',
+//   Item: {
+//      UserId: {userId}, //partitionkey
+//      pointcount: {pointcount},
+//      name: "Amanda"
+//   }
+// };
+
+// //1. Create an Event/User in point database
+// //use params and change values
+// dynamodb.put(params, function(err, data) {
+//   if (err) console.log(err);
+//   else console.log(data);
+// });
+
+// //2. Read Event/User in point database
+// //use params and change values
+// documentClient.get(params, function(err, data) {
+//   if (err) console.log(err);
+//   else console.log(data);
+// });
+// //or query
+// documentClient.query(params, function(err, data) {
+//   if (err) console.log(err);
+//   else console.log(data);
+// });
+
+// //3. Update Event/User in point database
+// //use params and change values
+// documentClient.update(params, function(err, data) {
+//   if (err) console.log(err);
+//   else console.log(data);
+// });
+
+// //4. Delete Event/User in point database 
+// //use params and change values
+// documentClient.delete(params, function(err, data) {
+//   if (err) console.log(err);
+//   else console.log(data);
+// });
+
+// testing out db stuff, this works
+// const putItem = () => {
+// var params3 = {};
+// params3.TableName = "Events";
+// params3.Item = {
+//   EventId: 4, //partition key
+//      Date: "today", //sort key
+//      name: "Meet and Greet"
+// };
+// dynamodb.put(params3, function(err, data) {
+//   if (err) console.log(err);
+//   else console.log(data);
+// });
+// }
+
+
 
 function App() {
-  const [formState, updateFormState] = useState(initialFormState)
-  const [user, updateUser] = useState(null)
-
-  // persists user information
-  useEffect(() => {
-    checkUser()
-    setAuthListener()
-  }, [])
-
-  async function setAuthListener() {
-    Hub.listen('auth', (data) => {
-      switch (data.payload.event) {
-        case 'signOut':
-          updateFormState(() => ({ ...formState, formType: "signUp" }))
-          break;
-        default:
-          break;
-      }
-    })
-  }
-
-  async function checkUser() {
-    try {
-      const user = await Auth.currentAuthenticatedUser()
-      updateUser(user)
-      updateFormState(() => ({ ...formState, formType: "signedIn" }))
-    } catch (err) {
-      updateUser(null) // could leave empty
-    }
-  }
-
-  function onChange(e) {
-    e.persist()
-    updateFormState(() => ({ ...formState, [e.target.name]: e.target.value}))
-  }
-
-  // functions for each form type, using Auth
-  const { formType } = formState
-  async function signUp() {
-    const { username, email, password } = formState
-    await Auth.signUp({ username, password, attributes: { email }})
-    updateFormState(() => ({ ...formState, formType: "confirmSignUp" }))
-  }
-  async function confirmSignUp() {
-    const { username, authCode } = formState
-    await Auth.confirmSignUp(username, authCode)
-    updateFormState(() => ({ ...formState, formType: "signIn" }))
-  }
-  async function signIn() {
-    const { username, password } = formState
-    await Auth.signIn(username, password)
-    updateFormState(() => ({ ...formState, formType: "signedIn" }))
-  }
-
   return (
-    <div className="App">
-    {
-      formType == 'signUp' && (
-        <div>
-          <input name="username" onChange={onChange} placeholder="username" />
-          <input name="password" type="password" onChange={onChange} placeholder="password" />
-          <input name="email" onChange={onChange} placeholder="email" />
-          <button onClick={signUp}>Sign Up</button>
-          <button onClick={() => updateFormState(() => ({
-            ...formState, formType: "signIn"
-          }))}>Sign In</button>
-        </div>
-      )
-    }
-
-    {
-      formType == 'confirmSignUp' && (
-        <div>
-          <input name="authCode" onChange={onChange} placeholder="Confirmation Code" />
-          <button onClick={confirmSignUp}>Confirm Sign Up</button>
-        </div>
-      )
-    }
-    
-    {
-      formType == 'signIn' && (
-        <div>
-          <input name="username" onChange={onChange} placeholder="username" />
-          <input name="password" type="password" onChange={onChange} placeholder="password" />
-          <button onClick={signIn}>Sign In</button>
-        </div>
-      )
-    }
-
-    {
-      formType == 'signedIn' && (
-        <div>
-          <h1>Welcome, user</h1>
-          <button onClick={
-            () => Auth.signOut()
-          }>Sign Out</button>
-        </div>
-      )
-    }
+    <div>
+      <>
+      <Navbar />
+      <Routes />
+      </>
     </div>
   );
 }

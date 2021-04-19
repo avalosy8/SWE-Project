@@ -2,16 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import { BrowserRouter } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
-
+import {GlobalProvider} from './Context/GlobalContext'
 import Amplify from 'aws-amplify';
 import awsconfig from './aws-exports';
 Amplify.configure(awsconfig);
 
+
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <BrowserRouter>
+    <GlobalProvider>
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+    </GlobalProvider>
+  </BrowserRouter>,
   document.getElementById('root')
 );
 
