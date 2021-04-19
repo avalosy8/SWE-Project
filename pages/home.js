@@ -1,6 +1,5 @@
 import React from 'react';
 import "../App.css";
-import {SidebarData} from '../components/SidebarData.js';
 // import welcome from "../Components/images/welcome.jpg";
 
 function Home() {
