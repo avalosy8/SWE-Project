@@ -15,11 +15,14 @@ import HttpsIcon from '@material-ui/icons/Https';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import CheckIcon from '@material-ui/icons/Check';
 
+import {GlobalContext} from '../Context/GlobalContext'
+import {useContext} from 'react'
+
 import Sidebar from "./Sidebar";
 import Main from "./Main"
 
 const initialFormState = {
-  username: '', password: '', email: '', authCode: '', formType: 'signUp'
+  username: '', password: '', email: '', authCode: ''
 }
 
 const useStyles = makeStyles({
@@ -30,8 +33,10 @@ const useStyles = makeStyles({
 
 function Login() {
   const [formState, updateFormState] = useState(initialFormState)
-  const [user, updateUser] = useState(null)
+  // const [user, updateUser] = useState(null)
 
+  const {user, formType, updateUser, updateFormType} = useContext(GlobalContext);
+  
   // persists user information
   useEffect(() => {
     checkUser()
@@ -40,11 +45,13 @@ function Login() {
 
   async function setAuthListener() {
     Hub.listen('auth', (data) => {
+      console.log(data.payload)
       switch (data.payload.event) {
         case 'signOut':
-          updateFormState(() => ({ ...formState, formType: "signUp" }))
+          // updateFormState(() => ({ ...formState, formType: "signUp" }))
+          updateFormType("signUp")
           break;
-        default:
+
           break;
       }
     })
@@ -55,7 +62,8 @@ function Login() {
       const user2 = await Auth.currentAuthenticatedUser()
       console.log(user2)
       updateUser(user2)
-      updateFormState(() => ({ ...formState, formType: "signedIn" }))
+      // updateFormState(() => ({ ...formState, formType: "signedIn" }))
+      updateFormType("signedIn")
     } catch (err) {
       updateUser(null) // could leave empty
     }
@@ -68,30 +76,35 @@ function Login() {
   }
 
   // functions for each form type, using Auth
-  const { formType } = formState
+  // const { formType } = formState
+
   async function signUp() {
     const { username, email, password } = formState
     await Auth.signUp({ username, password, attributes: { email }})
-    updateFormState(() => ({ ...formState, formType: "confirmSignUp" }))
+    // updateFormState(() => ({ ...formState, formType: "confirmSignUp" }))
+    updateFormType("confirmSignUp")
   }
   async function confirmSignUp() {
     const { username, authCode } = formState
     await Auth.confirmSignUp(username, authCode)
     console.log('inside confirmSignUp()', user);
-    updateFormState(() => ({ ...formState, formType: "signIn" }))
+    // updateFormState(() => ({ ...formState, formType: "signIn" }))
+    updateFormType("signIn")
   }
   async function signIn() {
     const { username, password } = formState
     await Auth.signIn(username, password)
     console.log('inside signIn()', user);
-    updateFormState(() => ({ ...formState, formType: "signedIn" }))
-    putAuthUser();
+    // updateFormState(() => ({ ...formState, formType: "signedIn" }))
+    updateFormType("signedIn")
+    if(user) {putAuthUser();}
   }
 ///
   Auth.currentAuthenticatedUser()
     .then(data => console.log(data.attributes))
     .catch(err => console.log(err));
 
+    console.log(formType)
 
 /************ DynamoDB stuff ******************/ 
 const { v4: uuidv4 } = require('uuid'); 
@@ -144,9 +157,7 @@ async function putAuthUser() {
           <CardContent> <CheckIcon color="primary"/> <Input name="email" onChange={onChange} placeholder="Confirm Email" /> </CardContent>
           <CardContent> <HttpsIcon color="primary"/> <Input name="password" type="password" onChange={onChange} placeholder="Password" /> </CardContent>
           <CardContent> <Button variant="contained" color="primary" onClick={signUp}>Sign Up</Button>
-                        <Button variant="contained" color="primary" onClick={() => updateFormState(() => ({
-            ...formState, formType: "signIn"
-          }))}>Sign In</Button> </CardContent>
+                        <Button variant="contained" color="primary" onClick={() => updateFormType("signIn")}>Sign In</Button> </CardContent>
         </CardContent>
       )
     }
@@ -169,8 +180,7 @@ async function putAuthUser() {
         </div>
       )
     }
-
-    {
+    { 
       formType == 'signedIn' && (
         <div className="welcomAlignment">
           <Sidebar />
