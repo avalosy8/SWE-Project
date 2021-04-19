@@ -94,11 +94,13 @@ const dynamodb = new AWS.DynamoDB.DocumentClient(); //simplified dynamodb librar
 // });
 // }
 
+
+
 function App() {
 
   return (
     <div className="App">
-      <Sidebar />
+      {/* <Sidebar /> */}
       <Login />
       <GoogleCalendar/>
 

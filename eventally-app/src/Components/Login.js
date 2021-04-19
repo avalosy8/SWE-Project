@@ -52,8 +52,9 @@ function Login() {
 
   async function checkUser() {
     try {
-      const user = await Auth.currentAuthenticatedUser()
-      updateUser(user)
+      const user2 = await Auth.currentAuthenticatedUser()
+      console.log(user2)
+      updateUser(user2)
       updateFormState(() => ({ ...formState, formType: "signedIn" }))
     } catch (err) {
       updateUser(null) // could leave empty
@@ -63,6 +64,7 @@ function Login() {
   function onChange(e) {
     e.persist()
     updateFormState(() => ({ ...formState, [e.target.name]: e.target.value}))
+    console.log('FORM STATE:', formState)
   }
 
   // functions for each form type, using Auth
@@ -75,17 +77,62 @@ function Login() {
   async function confirmSignUp() {
     const { username, authCode } = formState
     await Auth.confirmSignUp(username, authCode)
+    console.log('inside confirmSignUp()', user);
     updateFormState(() => ({ ...formState, formType: "signIn" }))
   }
   async function signIn() {
     const { username, password } = formState
     await Auth.signIn(username, password)
+    console.log('inside signIn()', user);
     updateFormState(() => ({ ...formState, formType: "signedIn" }))
+    putAuthUser();
   }
-
+///
   Auth.currentAuthenticatedUser()
     .then(data => console.log(data.attributes))
     .catch(err => console.log(err));
+
+
+/************ DynamoDB stuff ******************/ 
+const { v4: uuidv4 } = require('uuid'); 
+uuidv4();
+const AWS = require("aws-sdk");
+AWS.config.update ({
+  region: "us-east-1",
+  accessKeyId: "AKIAXJ3VTSS354FEHLFV",
+  secretAccessKey: "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"  
+});
+
+const dynamodb = new AWS.DynamoDB.DocumentClient(); 
+
+async function getAuthUserEmail() {
+  var params = {};
+  params.TableName = "Users";
+  params.Key = {
+    UserId: user.attributes.sub // should be user.sub
+  };
+ console.log('user.attributes.sub: ', user.attributes.sub)
+  var result = await dynamodb.get(params, function(err, data) {
+  if (err) console.log(err);
+  else console.log('after getAuthUserEmail(): ', data);
+  });
+}
+
+async function putAuthUser() {
+  var params = {};
+  params.TableName = "Users";
+  params.Item = {
+      UserId: user.attributes.sub, //partition key
+      Email: user.attributes.email
+  };
+
+  var result = await dynamodb.put(params, function(err, data) {
+  if (err) console.log(err);
+  else console.log(data);
+  });
+}
+
+/************ DynamoDB stuff ******************/ 
 
   const classes = useStyles();
   return (
@@ -133,8 +180,13 @@ function Login() {
           <Button variant="contained" color="primary" onClick={
             () => Auth.signOut()
           }>Sign Out</Button>
+
+
+          <Button variant="contained" color="primary" onClick={() => getAuthUserEmail()}>Get Email</Button>
+          <Button variant="contained" color="primary" onClick={() => putAuthUser()}>Put User infor</Button>
+
         </div>
-      )
+      ) 
     }
     </Card>
   );

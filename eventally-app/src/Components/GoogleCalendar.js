@@ -117,9 +117,9 @@ function GoogleCalendar(){
 
     // when clicked, show events
     useEffect(() => {
-        if(click == 0) {
-        return
-        }
+        // if(click == 0) {
+        // return
+        // }
         function start() {
             gapi.client.init({
                 apiKey: API_KEY,
@@ -141,7 +141,7 @@ function GoogleCalendar(){
         }      
       gapi.load('client', start)
         
-    }, [click])
+    }, [])
 
     console.log('C_EVENTS: ', calendarEvents)
 
@@ -152,10 +152,10 @@ function GoogleCalendar(){
     return (
         <div className="App">
         <header className="App-header">
-            <p>Click to output calendar events </p>
+            {/* <p>Click to output calendar events </p> */}
             { /* part of handleClick */ }
             {/* <button style={{width: 100, height: 50}} onClick={handleClick}>Get Events</button> */}
-            <button style={{width: 100, height: 50}} onClick={e => setClick(click+1)}>Get Events</button>
+            {/* <button style={{width: 100, height: 50}} onClick={e => setClick(click+1)}>Get Events</button> */}
 
             {/* displays calendarEvents useState variable in its entire json string */}
             {/* {calendarEvents && <div>{JSON.stringify(calendarEvents.events, null, 4)}</div>} */}
