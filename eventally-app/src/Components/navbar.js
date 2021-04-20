@@ -1,6 +1,7 @@
 import React, {useContext} from 'react';
 import { NavLink } from 'react-router-dom';
 import '../styles/navbar.css';
+import logo from '../Components/images/logo.png';
 import signOut from '../helperFunctions';
 import {GlobalContext} from '../Context/GlobalContext'
 
@@ -9,47 +10,52 @@ const Navbar = () => {
 
   return(
   <nav className="navbar">
-    <NavLink
-      exact
-      activeClassName="navbar__link--active"
-      className="navbar__link"
-      to="/"
-    >
-      Home
-    </NavLink>
-    {user && 
-      <NavLink
-      activeClassName="navbar__link--active"
-      className="navbar__link"
-      to="/events"
-      >
-        Events
-      </NavLink>
-    }
+    <div className="logo">
+      <img src={logo} alt="WECE Logo" />
+    </div>
 
-    {user && 
-      <NavLink
-      activeClassName="navbar__link--active"
-      className="navbar__link"
-      to="/points"
+    <div className="links">
+      { user && <NavLink
+        exact
+        activeClassName="navbar__link--active"
+        className="navbar__link"
+        to="/home"
       >
-        Points
+        Home
       </NavLink>
-    }
+      }
 
-    {user && 
-      <NavLink
-      activeClassName="navbar__link--active"
-      className="navbar__link"
-      to="/"
-      onClick={signOut}
-      >
-        Logout
-      </NavLink>
-    }
-    {/* { !user &&
+      {user && 
+        <NavLink
+        activeClassName="navbar__link--active"
+        className="navbar__link"
+        to="/events"
+        >
+          Events
+        </NavLink>
+      }
 
-    } */}
+      {user && 
+        <NavLink
+        activeClassName="navbar__link--active"
+        className="navbar__link"
+        to="/points"
+        >
+          Points
+        </NavLink>
+      }
+
+      {user && 
+        <NavLink
+        activeClassName="navbar__link--active"
+        className="navbar__link"
+        to="/"
+        onClick={signOut}
+        >
+          Logout
+        </NavLink>
+      }
+    </div>
   </nav>
 )};
 

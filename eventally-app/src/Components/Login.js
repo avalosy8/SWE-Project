@@ -1,17 +1,16 @@
 import React, { useState, useEffect} from 'react';
 import {useHistory} from 'react-router-dom';
 import '../App.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'bootstrap-css-only/css/bootstrap.min.css'; 
+import 'mdbreact/dist/css/mdb.css';
 
 import { Auth, Hub } from 'aws-amplify';
 
-import { 
-  MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn, MDBIcon, 
-  MDBCard, MDBCardImage, MDBCardBody, MDBCardText, MDBCardTitle, 
-  MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavLink, MDBNavbarToggler, MDBCollapse, MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem} from "mdbreact";
+import { MDBContainer, MDBInput, MDBCard, MDBCardBody, MDBCardText, MDBCardTitle } from "mdbreact";
 import {GlobalContext} from '../Context/GlobalContext'
 import {useContext} from 'react'
 
-import Sidebar from "./Sidebar";
 import Main from "./Main"
 
 const initialFormState = {
@@ -36,6 +35,7 @@ function Login() {
         case 'signOut':
           updateFormType("signUp")
           updateUser(null)
+          history.push('/');
           break;
 
         case 'signedIn':
@@ -211,6 +211,7 @@ async function putAuthUser() {
       <div className="text-center">
         <h2>Successfully logged in!</h2>
         <Main />
+        {history.push('/home')}
       </div>
     )
   }
