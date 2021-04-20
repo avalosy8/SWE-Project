@@ -12,6 +12,7 @@
     display: flex;
     flex-direction: row;
     width: 100%;
+    height: auto
 }
 .css-1uqnjl3-Calendar {
     border-left: 20px solid #0c446c !important;
@@ -40,7 +41,7 @@
 
 
 .App .card1 {
-    width: 100%;
+    width: 80%;
     background-color: white;
     padding: 10px;
     border-radius: 5px;
@@ -60,5 +61,11 @@
 
 .App .card1 .date {
     text-align: center;
+}
+
+.App h1 {
+    color: #ff5e59;
+    font-family: sans-serif;
+
 }
 

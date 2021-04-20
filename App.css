@@ -27,12 +27,13 @@ body {
 
 img {
   width: 200px;
-  padding: 21px;
+  /* padding: 21px; */
 }
 
 .Main {
-  width: 55%;
-  padding-left: 15%;
+  width: 100%;
+  /* padding-left: 15%; */
+  display: flex;
 }
 
 .Main img {
