@@ -45,6 +45,7 @@ function Login() {
 
         case 'signIn':
           checkUser()
+          history.push('/');
           break;
       }
     })
